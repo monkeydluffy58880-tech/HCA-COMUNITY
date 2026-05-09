@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HCA Seleksi</title>
+
+<style>
+body{
+margin:0;
+font-family:system-ui;
+background:radial-gradient(circle at top,#0b001a,#000);
+color:#eaeaea;
+overflow:hidden;
+}
+
+/* CANVAS */
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-1;
+}
+
+/* MAIN */
+.main{
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+padding:20px;
+}
+
+/* CARD */
+.card{
+position:relative;
+width:100%;
+max-width:420px;
+padding:25px;
+border-radius:18px;
+background:rgba(8,0,20,0.85);
+backdrop-filter:blur(18px);
+box-shadow:0 0 30px rgba(120,0,255,0.15);
+text-align:center;
+}
+
+/* GLOW HALUS */
+.card::before{
+content:"";
+position:absolute;
+inset:-2px;
+border-radius:20px;
+background:linear-gradient(45deg,#6a00ff,#9b00ff,#6a00ff);
+filter:blur(18px);
+opacity:.25;
+z-index:-1;
+}
+
+/* LOGO */
+.logo{
+width:100px;
+height:100px;
+border-radius:50%;
+object-fit:cover;
+margin-bottom:10px;
+box-shadow:0 0 20px rgba(120,0,255,0.6);
+}
+
+/* TITLE */
+h2{
+margin:5px 0;
+background:linear-gradient(45deg,#9b5cff,#d3a6ff);
+-webkit-background-clip:text;
+color:transparent;
+}
+
+/* INPUT */
+input,textarea{
+width:100%;
+margin:8px 0;
+padding:12px;
+border-radius:10px;
+border:1px solid rgba(160,120,255,0.1);
+background:#0f0520;
+color:#ddd;
+outline:none;
+}
+
+input:focus,textarea:focus{
+box-shadow:0 0 8px rgba(140,80,255,0.5);
+border-color:#7b3cff;
+}
+
+/* BUTTON */
+button{
+margin-top:10px;
+padding:12px;
+width:100%;
+border:none;
+border-radius:12px;
+background:linear-gradient(90deg,#6a00ff,#8b5cff);
+color:#fff;
+font-weight:600;
+cursor:pointer;
+transition:.2s;
+}
+
+button:hover{
+transform:scale(1.02);
+box-shadow:0 0 18px rgba(160,80,255,0.5);
+}
+
+/* HIDDEN ANIMATION */
+.hidden{
+opacity:0;
+max-height:0;
+overflow:hidden;
+transition:.5s;
+}
+.show{
+opacity:1;
+max-height:500px;
+}
+
+/* ADMIN */
+.admin{
+margin-top:20px;
+text-align:center;
+font-size:14px;
+color:#aaa;
+}
+
+.admin-box{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:8px;
+margin-top:10px;
+}
+
+.admin-name{
+padding:6px 12px;
+border-radius:20px;
+background:#12062a;
+box-shadow:0 0 8px rgba(120,0,255,0.2);
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="bg"></canvas>
+
+<div class="main">
+
+<div class="card">
+
+<img src="https://files.catbox.moe/7u5br8.png" class="logo">
+
+<h2>HCA</h2>
+<p style="font-size:12px;color:#aaa;">komunitas editor anime</p>
+
+<!-- START -->
+<button onclick="openForm()">Seleksi</button>
+
+<!-- FORM -->
+<div id="formBox" class="hidden">
+<form id="f">
+<input id="n" placeholder="nama" required>
+<input id="u" type="number" placeholder="umur" required>
+<textarea id="a" placeholder="alasan join" required></textarea>
+<button type="submit">Gabung</button>
+</form>
+</div>
+
+<!-- NEXT -->
+<div id="nextBox" class="hidden">
+<button onclick="join()">Masuk Grup Seleksi</button>
+</div>
+
+</div>
+
+<!-- ADMIN -->
+<div class="admin">
+<b>ADMIN</b>
+<div class="admin-box">
+<div class="admin-name">Reiiko</div>
+<div class="admin-name">Monzy</div>
+<div class="admin-name">Izces</div>
+<div class="admin-name">Draz</div>
+</div>
+</div>
+
+</div>
+
+<script>
+function openForm(){
+document.getElementById("formBox").classList.add("show");
+}
+
+function join(){
+location.href="https://chat.whatsapp.com/EJXvKsRiG8s9t2RE3I3E6f";
+}
+
+/* BACKGROUND */
+const c=document.getElementById("bg");
+const ctx=c.getContext("2d");
+
+function resize(){
+c.width=innerWidth;
+c.height=innerHeight;
+}
+resize();
+onresize=resize;
+
+let stars=[],shoot=[];
+
+for(let i=0;i<120;i++){
+stars.push({
+x:Math.random()*c.width,
+y:Math.random()*c.height,
+s:Math.random()*0.5+0.2
+});
+}
+
+setInterval(()=>{
+shoot.push({x:Math.random()*c.width,y:0,l:0});
+},1800);
+
+function draw(){
+ctx.clearRect(0,0,c.width,c.height);
+
+/* stars */
+ctx.fillStyle="#9b5cff";
+stars.forEach(s=>{
+ctx.fillRect(s.x,s.y,2,2);
+s.y+=s.s;
+if(s.y>c.height)s.y=0;
+});
+
+/* shooting */
+ctx.strokeStyle="#d3a6ff";
+ctx.lineWidth=1.5;
+shoot.forEach((s,i)=>{
+ctx.beginPath();
+ctx.moveTo(s.x,s.y);
+ctx.lineTo(s.x+60,s.y+60);
+ctx.stroke();
+
+s.x+=5;
+s.y+=5;
+s.l++;
+
+if(s.l>25)shoot.splice(i,1);
+});
+}
+setInterval(draw,30);
+</script>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import{getFirestore,addDoc,collection}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const app=initializeApp({
+apiKey:"AIzaSyBwyXB_-QV_ZECr6GhQ-eIGOLMA8IKsKc0",
+authDomain:"hcaseleksi.firebaseapp.com",
+projectId:"hcaseleksi"
+});
+
+const db=getFirestore(app);
+
+f.onsubmit=async(e)=>{
+e.preventDefault();
+
+await addDoc(collection(db,"pendaftar"),{
+nama:n.value,
+umur:u.value,
+alasan:a.value,
+waktu:Date.now()
+});
+
+document.getElementById("nextBox").classList.add("show");
+};
+</script>
+
+</body>
+</html>
